@@ -12,12 +12,22 @@ library(readr)
 library(readxl)
 ```
 
-Read in data
+Merge ASV count and taxonomy files
 ```{r}
-biom_file = "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/second_biom/2020-10-16_update/phyla6_relative-table.tsv"
-map_file = "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/second_biom/sample-metadata.txt"
+biom_file <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/second_biom/2020-10-16_update/otu-table.txt"
+taxonomy_file <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/second_biom/2020-10-16_update/taxonomy.tsv"
 
-otu_table <- read_delim(biom_file, "\t", escape_double = FALSE, trim_ws = TRUE)
+otu_table <- read.table(file = biom_file, header = TRUE)
+tax <- read.table(file = taxonomy_file, sep = '\t', header = TRUE)
+merged <- merge(otu_table, tax, by.x = c("OTUID"), by.y = c("OTUID"))
+head(merged)
+write.table(merged, file = "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/second_biom/2020-10-16_update/combined_otu_tax", sep = '\t', col.names = TRUE, row.names = FALSE)
+```
+
+Load files into phyloseq
+```{r}
+map_file <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/second_biom/sample-metadata.txt"
+
 metadata <- read_delim(map_file, "\t", escape_double = FALSE, trim_ws = TRUE)
 ```
 
@@ -36,10 +46,11 @@ samples_with_isolates <- isolates$Isolate
 
 isolate_subset <- subset_samples(merged_phyloseq, patient %in% samples_with_isolates)
 
-baseline <- subset_samples(merged_phyloseq, visit == 1)
-endpoint <- subset_samples(merged_phyloseq, visit == 5)
+baseline <- subset_samples(isolate_subset, visit == 1)
+endpoint <- subset_samples(isolate_subset, visit == 5)
 ```
 
+Plot top 20 OTUs and color by family. Provided by Jay.
 ```{r}
 
 ```
