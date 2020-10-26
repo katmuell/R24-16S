@@ -30,17 +30,19 @@ otu_matrix_file <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolat
 taxonomy_matrix_file <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/second_biom/2020-10-16_update/taxonomy-matrix.csv"
 map_file <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/second_biom/sample-metadata.txt"
 
-otu_matrix <- read.csv(otu_matrix_file)
+otu_matrix <- read.csv(otu_matrix_file, row.names = 1)
 otu_matrix <- as.matrix(otu_matrix)
 
-taxonomy_matrix <- read.csv(taxonomy_matrix_file)
+taxonomy_matrix <- read.csv(taxonomy_matrix_file, row.names = 1)
 taxonomy_matrix <- as.matrix(taxonomy_matrix)
+
 metadata <- read_delim(map_file, "\t", escape_double = FALSE, trim_ws = TRUE)
 ```
 
 Import as phyloseq objects
 ```{r}
-OTU <- otu_table(otu_table, taxa_are_rows = TRUE)
+otu <- otu_table(otu_matrix, taxa_are_rows = TRUE)
+tax <- tax_table(taxonomy_matrix)
 meta <- sample_data(metadata)
 ```
 
