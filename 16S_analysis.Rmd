@@ -11,6 +11,8 @@ library(phyloseq)
 library(readr)
 library(readxl)
 library(dplyr)
+library(ggplot2)
+library(cowplot)
 ```
 
 Merge ASV count and taxonomy files
@@ -81,6 +83,19 @@ length(sample_names(end_obese))
 
 Plot top 20 OTUs and color by family. Provided by Jay.
 ```{r}
+Calc.Top20 <- function(subset, graphtitle) {
+  top_otus <- names(sort(taxa_sums(subset), decreasing = TRUE))[1:20]
+  subset_top20 <- prune_taxa(top_otus, subset)
+  barplot <- plot_bar(subset_top20, x = "Patient", fill = "Phylum") +
+    geom_bar(stat = "identity", position = "stack", size = 0) +
+    labs(title = graphtitle)
+  
+  return(barplot)
+}
 
+control_plot <- Calc.Top20(control, "Controls")
+base_obese_plot <- Calc.Top20(base_obese, "Base Obese")
+end_obese_plot <- Calc.Top20(end_obese, "End Obese")
+
+plot_grid(control_plot, base_obese_plot, end_obese_plot, labels = c('A', 'B', 'C'))
 ```
-
