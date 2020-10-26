@@ -27,13 +27,20 @@ OTU <- otu_table(otu_table, taxa_are_rows = TRUE)
 meta <- sample_data(metadata)
 ```
 
+Set up subsets for analysis
 ```{r}
 verruco_percent <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/second_biom/2020-10-16_update/verruco_percent.xlsx"
 
 isolates <- read_excel(verruco_percent)
 samples_with_isolates <- isolates$Isolate
 
-subset_samples(merged_phyloseq, visit == 1, patient %in% samples_with_isolates) -> baseline
-subset_samples(merged_phyloseq, visit == 5, patient %in% samples_with_isolates) -> endpoint
+isolate_subset <- subset_samples(merged_phyloseq, patient %in% samples_with_isolates)
+
+baseline <- subset_samples(merged_phyloseq, visit == 1)
+endpoint <- subset_samples(merged_phyloseq, visit == 5)
+```
+
+```{r}
+
 ```
 
