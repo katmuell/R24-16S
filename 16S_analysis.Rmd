@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(phyloseq)
 library(readr)
 library(readxl)
+library(dplyr)
 ```
 
 Merge ASV count and taxonomy files
@@ -37,13 +38,18 @@ taxonomy_matrix <- read.csv(taxonomy_matrix_file, row.names = 1)
 taxonomy_matrix <- as.matrix(taxonomy_matrix)
 
 metadata <- read_delim(map_file, "\t", escape_double = FALSE, trim_ws = TRUE)
+meta_df <- metadata %>% select(-SampleID) %>% as.data.frame()
+row.names(meta_df) <- metadata$SampleID
 ```
 
-Import as phyloseq objects
+Import as phyloseq objects and merge into one
 ```{r}
 otu <- otu_table(otu_matrix, taxa_are_rows = TRUE)
 tax <- tax_table(taxonomy_matrix)
-meta <- sample_data(metadata)
+meta <- sample_data(meta_df)
+
+physeq <- phyloseq(otu, tax, meta)
+physeq
 ```
 
 Set up subsets for analysis
