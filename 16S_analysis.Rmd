@@ -14,20 +14,27 @@ library(readxl)
 
 Merge ASV count and taxonomy files
 ```{r}
-biom_file <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/second_biom/2020-10-16_update/otu-table.txt"
+otu_file <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/second_biom/2020-10-16_update/otu-table.txt"
 taxonomy_file <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/second_biom/2020-10-16_update/taxonomy.tsv"
 
 otu_table <- read.table(file = biom_file, header = TRUE)
 tax <- read.table(file = taxonomy_file, sep = '\t', header = TRUE)
 merged <- merge(otu_table, tax, by.x = c("OTUID"), by.y = c("OTUID"))
-head(merged)
-write.table(merged, file = "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/second_biom/2020-10-16_update/combined_otu_tax", sep = '\t', col.names = TRUE, row.names = FALSE)
+write.table(merged, file = "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/second_biom/2020-10-16_update/combined_otu_tax.txt", sep = '\t', col.names = TRUE, row.names = FALSE)
 ```
+The resulting file was then used to create the otu and taxonomy files used in later steps. For ASV, I copied the OTU and count data into a new csv file. For taxonomy, I copied the OTU and taxon data into a new csv file. The taxon data was then split into Kindom, Phylum, etc. using the text-to-columns option in Excel.
 
 Load files into phyloseq
 ```{r}
+otu_matrix_file <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/second_biom/2020-10-16_update/otu-matrix.csv"
+taxonomy_matrix_file <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/second_biom/2020-10-16_update/taxonomy-matrix.csv"
 map_file <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/second_biom/sample-metadata.txt"
 
+otu_matrix <- read.csv(otu_matrix_file)
+otu_matrix <- as.matrix(otu_matrix)
+
+taxonomy_matrix <- read.csv(taxonomy_matrix_file)
+taxonomy_matrix <- as.matrix(taxonomy_matrix)
 metadata <- read_delim(map_file, "\t", escape_double = FALSE, trim_ws = TRUE)
 ```
 
