@@ -69,6 +69,12 @@ base_obese <- subset_samples(baseline, Treatment != "control")
 end_obese <- subset_samples(endpoint, Treatment != "control")
 ```
 
+Count how many samples are in our categories of interest
+```{r}
+length(sample_names(control))
+length(sample_names(base_obese))
+length(sample_names(end_obese))
+```
 
 Plot top 20 OTUs and color by family. Provided by Jay.
 ```{r}
