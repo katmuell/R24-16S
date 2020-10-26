@@ -61,8 +61,11 @@ samples_with_isolates <- isolates$Isolate
 
 isolate_subset <- subset_samples(physeq, SampleID %in% samples_with_isolates)
 
-baseline <- subset_samples(isolate_subset, Visit_number == 1)
-endpoint <- subset_samples(isolate_subset, Visit_number == 5)
+#Convert abundance counts to percentages. Provided by Jay.
+isolate_subset_perc <- transform_sample_counts(isolate_subset, function(x) 100 * x/sum(x))
+
+baseline <- subset_samples(isolate_subset_perc, Visit_number == 1)
+endpoint <- subset_samples(isolate_subset_perc, Visit_number == 5)
 
 control <- subset_samples(baseline, Treatment == "control")
 base_obese <- subset_samples(baseline, Treatment != "control")
