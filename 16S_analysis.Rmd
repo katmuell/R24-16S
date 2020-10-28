@@ -15,6 +15,9 @@ library(ggplot2)
 library(cowplot)
 ```
 
+## Analysis of Interim Samples
+Samples submitted by Brad in 2019
+
 Merge ASV count and taxonomy files
 ```{r}
 otu_file <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/second_biom/2020-10-16_update/otu-table.txt"
@@ -81,7 +84,7 @@ length(sample_names(base_obese))
 length(sample_names(end_obese))
 ```
 
-Plot top 20 OTUs and color by family. Provided by Jay.
+Plot top 20 OTUs and color by phylum. Provided by Jay.
 ```{r}
 Calc.Top20 <- function(subset, graphtitle) {
   top_otus <- names(sort(taxa_sums(subset), decreasing = TRUE))[1:20]
@@ -99,3 +102,29 @@ end_obese_plot <- Calc.Top20(end_obese, "End Obese")
 
 plot_grid(control_plot, base_obese_plot, end_obese_plot, labels = c('A', 'B', 'C'))
 ```
+
+Plot top 20 OTUs and color by family. Requested for the R24 group.
+```{r}
+Calc.Top20.fam <- function(subset, graphtitle) {
+  top_otus <- names(sort(taxa_sums(subset), decreasing = TRUE))[1:20]
+  subset_top20 <- prune_taxa(top_otus, subset)
+  barplot <- plot_bar(subset_top20, x = "SampleID", fill = "Family") +
+    geom_bar(stat = "identity", position = "stack", size = 0) +
+    scale_fill_brewer(palette = "Paired") +
+    labs(title = graphtitle)
+  
+  return(barplot)
+}
+
+complete_perc <- transform_sample_counts(physeq, function(x) 100 * x/sum(x))
+complete_plot <- Calc.Top20.fam(complete_perc, "Interim Samples")
+complete_plot
+```
+
+## Analysis of Recent Samples
+Samples submitted by Holly in 2020
+
+```{r}
+
+```
+
