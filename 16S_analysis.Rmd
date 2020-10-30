@@ -33,6 +33,23 @@ write.table(merged, file = "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinica
 ```
 The resulting file was then used to create the otu and taxonomy files used in later steps. For ASV, I copied the OTU and count data into a new csv file. For taxonomy, I copied the OTU and taxon data into a new csv file. The taxon data was then split into Kingdom, Phylum, etc. using the text-to-columns option in Excel.
 
+Load in a way to filter for only the samples that are relevant to our isolates
+```{r}
+#At first, I wanted stool samples with matching Akkermansia isolates
+#verruco_percent <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical #Isolates/Data/Data_for_analysis/Community_Analysis/second_biom/2020-10-16_update/verruco_percent.xlsx"
+
+#isolates <- read_excel(verruco_percent)
+#samples_with_isolates <- isolates$Isolate
+
+#isolate_subset <- subset_samples(physeq, SampleID %in% samples_with_isolates)
+
+#Now I want stool samples of patients with Akk isolates at any timepoint
+human_subjects_details <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/HumanSubjectsAkkermansia_KMupdate.xlsx"
+patients_with_isolates <- read_excel(human_subjects_details)
+patient_list <- patients_with_isolates$IND
+patient_list <- c(patient_list, "Brad")
+```
+
 Load files into phyloseq
 ```{r}
 otu_matrix_file <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/second_biom/2020-10-16_update/otu-matrix.csv"
@@ -46,7 +63,8 @@ taxonomy_matrix <- read.csv(taxonomy_matrix_file, row.names = 1)
 taxonomy_matrix <- as.matrix(taxonomy_matrix)
 
 metadata <- read_delim(map_file, "\t", escape_double = FALSE, trim_ws = TRUE)
-meta_df <- metadata %>% as.data.frame()
+meta_df <- metadata %>% as.data.frame() %>% 
+  mutate(Patient_f = factor(meta_df$Patient, levels = patient_list))
 row.names(meta_df) <- metadata$SampleID
 ```
 
@@ -62,20 +80,6 @@ physeq
 
 Set up subsets for analysis
 ```{r}
-#At first, I wanted stool samples with matching Akkermansia isolates
-#verruco_percent <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical #Isolates/Data/Data_for_analysis/Community_Analysis/second_biom/2020-10-16_update/verruco_percent.xlsx"
-
-#isolates <- read_excel(verruco_percent)
-#samples_with_isolates <- isolates$Isolate
-
-#isolate_subset <- subset_samples(physeq, SampleID %in% samples_with_isolates)
-
-#Now I want stool samples of patients with Akk isolates at any timepoint
-human_subjects_details <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/HumanSubjectsAkkermansia_KMupdate.xlsx"
-patients_with_isolates <- read_excel(human_subjects_details)
-patient_list <- patients_with_isolates$IND
-patient_list <- c(patient_list, "Brad")
-
 isolate_subset <- subset_samples(physeq, Patient %in% patient_list)
 
 #Convert abundance counts to percentages. Provided by Jay.
@@ -132,11 +136,10 @@ begin_end_top20 <- Calc.Top20(begin_end)
 
 begin_end_plot <- barplot <- plot_bar(begin_end_top20, x = "Visit_number", fill = "Phylum") +
   geom_bar(stat = "identity", position = "stack", size = 0) +
-  facet_wrap(~ Patient) +
+  facet_wrap(~ Patient_f) +
 labs(title = "Start and Endpoints by Patient")
 begin_end_plot
 ```
-
 
 Plot top 20 OTUs and color by family. Requested for the R24 group.
 ```{r}
