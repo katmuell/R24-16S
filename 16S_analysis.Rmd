@@ -96,39 +96,45 @@ length(sample_names(base_obese))
 length(sample_names(end_obese))
 ```
 
-Plot top 20 OTUs and color by phylum. Provided by Jay.
+Calculate top 20 taxa in samples. Provided by Jay.
 ```{r}
-Calc.Top20 <- function(subset, graphtitle) {
+Calc.Top20 <- function(subset) {
   top_otus <- names(sort(taxa_sums(subset), decreasing = TRUE))[1:20]
   subset_top20 <- prune_taxa(top_otus, subset)
-  barplot <- plot_bar(subset_top20, x = "Patient", fill = "Phylum") +
-    geom_bar(stat = "identity", position = "stack", size = 0) +
-    labs(title = graphtitle)
   
-  return(barplot)
+  return(subset_top20)
 }
+```
 
-control_plot <- Calc.Top20(control, "Controls")
-base_obese_plot <- Calc.Top20(base_obese, "Base Obese")
-end_obese_plot <- Calc.Top20(end_obese, "End Obese")
+Plot top 20 OTUs and color by phylum. Provided by Jay.
+```{r}
+control_top20 <- Calc.Top20(control)
+control_plot <- plot_bar(control_top20, x = "Patient", fill = "Phylum") +
+  geom_bar(stat = "identity", position = "stack", size = 0) +
+  labs(title = "Controls")
+
+base_obese_top20 <- Calc.Top20(base_obese)
+base_obese_plot <- plot_bar(base_obese_top20, x = "Patient", fill = "Phylum") +
+  geom_bar(stat = "identity", position = "stack", size = 0) +
+  labs(title = "Base Obese")
+
+end_obese_top20 <- Calc.Top20(end_obese)
+end_obese_plot <- plot_bar(end_obese_top20, x = "Patient", fill = "Phylum") +
+  geom_bar(stat = "identity", position = "stack", size = 0) +
+  labs(title = "End Obese")
 
 plot_grid(control_plot, base_obese_plot, end_obese_plot, labels = c('A', 'B', 'C'))
 ```
+
 ```{r}
 begin_end <- subset_samples(isolate_subset_perc, Visit_number %in% c(1, 5))
+begin_end_top20 <- Calc.Top20(begin_end)
 
-Calc.Top20.by.Patient <- function(subset, graphtitle) {
-  top_otus <- names(sort(taxa_sums(subset), decreasing = TRUE))[1:20]
-  subset_top20 <- prune_taxa(top_otus, subset)
-  barplot <- plot_bar(subset_top20, x = "Visit_number", fill = "Phylum") +
-    geom_bar(stat = "identity", position = "stack", size = 0) +
-    facet_wrap(~ Patient)
-    labs(title = graphtitle)
-  
-  return(barplot)
-}
-
-begin_end_plot <- Calc.Top20.by.Patient(begin_end, "Start and Endpoint by Patient")
+begin_end_plot <- barplot <- plot_bar(begin_end_top20, x = "Visit_number", fill = "Phylum") +
+  geom_bar(stat = "identity", position = "stack", size = 0) +
+  facet_wrap(~ Patient) +
+labs(title = "Start and Endpoints by Patient")
+begin_end_plot
 ```
 
 
