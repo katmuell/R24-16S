@@ -2,7 +2,10 @@
 title: "R24-16S"
 author: "Katherine Mueller"
 date: "10/23/2020"
-output: html_document
+output:
+  word_document: default
+  html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -19,7 +22,7 @@ library(cowplot)
 Samples submitted by Brad in 2019
 
 Merge ASV count and taxonomy files
-```{r}
+```{r, eval=FALSE}
 otu_file <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/second_biom/2020-10-16_update/otu-table.txt"
 taxonomy_file <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/second_biom/2020-10-16_update/taxonomy.tsv"
 
@@ -59,12 +62,21 @@ physeq
 
 Set up subsets for analysis
 ```{r}
-verruco_percent <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/second_biom/2020-10-16_update/verruco_percent.xlsx"
+#At first, I wanted stool samples with matching Akkermansia isolates
+#verruco_percent <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical #Isolates/Data/Data_for_analysis/Community_Analysis/second_biom/2020-10-16_update/verruco_percent.xlsx"
 
-isolates <- read_excel(verruco_percent)
-samples_with_isolates <- isolates$Isolate
+#isolates <- read_excel(verruco_percent)
+#samples_with_isolates <- isolates$Isolate
 
-isolate_subset <- subset_samples(physeq, SampleID %in% samples_with_isolates)
+#isolate_subset <- subset_samples(physeq, SampleID %in% samples_with_isolates)
+
+#Now I want stool samples of patients with Akk isolates at any timepoint
+human_subjects_details <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/HumanSubjectsAkkermansia_KMupdate.xlsx"
+patients_with_isolates <- read_excel(human_subjects_details)
+patient_list <- patients_with_isolates$IND
+patient_list <- c(patient_list, "Brad")
+
+isolate_subset <- subset_samples(physeq, Patient %in% patient_list)
 
 #Convert abundance counts to percentages. Provided by Jay.
 isolate_subset_perc <- transform_sample_counts(isolate_subset, function(x) 100 * x/sum(x))
@@ -102,6 +114,23 @@ end_obese_plot <- Calc.Top20(end_obese, "End Obese")
 
 plot_grid(control_plot, base_obese_plot, end_obese_plot, labels = c('A', 'B', 'C'))
 ```
+```{r}
+begin_end <- subset_samples(isolate_subset_perc, Visit_number %in% c(1, 5))
+
+Calc.Top20.by.Patient <- function(subset, graphtitle) {
+  top_otus <- names(sort(taxa_sums(subset), decreasing = TRUE))[1:20]
+  subset_top20 <- prune_taxa(top_otus, subset)
+  barplot <- plot_bar(subset_top20, x = "Visit_number", fill = "Phylum") +
+    geom_bar(stat = "identity", position = "stack", size = 0) +
+    facet_wrap(~ Patient)
+    labs(title = graphtitle)
+  
+  return(barplot)
+}
+
+begin_end_plot <- Calc.Top20.by.Patient(begin_end, "Start and Endpoint by Patient")
+```
+
 
 Plot top 20 OTUs and color by family. Requested for the R24 group.
 ```{r}
