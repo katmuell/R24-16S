@@ -137,8 +137,25 @@ begin_end_top20 <- Calc.Top20(begin_end)
 begin_end_plot <- barplot <- plot_bar(begin_end_top20, x = "Visit_number", fill = "Phylum") +
   geom_bar(stat = "identity", position = "stack", size = 0) +
   facet_wrap(~ Patient_f) +
-labs(title = "Start and Endpoints by Patient")
+  labs(title = "Start and Endpoints by Patient") +
+  theme(axis.text.x = element_blank())
 begin_end_plot
+```
+
+Plot the above, but with just the visit with the most Verrucomicrobia between baseline and endpoint.
+```{r}
+top_verruco_list <- c("Akk0090", "Akk0196", "Akk0330", "Akk0496", "Akk0500", "Akk0880", "Akk1370", "Akk1410", "Akk1476", "Akk1576", "Akk1610", "Akk1706", "Akk1756", "Akk1810", "Akk1820", "Akk1860", "Akk1900", "Akk1990", "Akk2000", "Akk2030", "Akk2090", "Akk2180", "Akk2190", "Akk2340", "Brad0")
+top_verrucos <- subset_samples(begin_end_top20, SampleID %in% top_verruco_list)
+
+top_verrucos_plot1 <- plot_bar(top_verrucos, x = "EMP", fill = "Phylum") +
+  geom_bar(stat = "identity", position = "stack", size = 0) +
+  facet_wrap(~ Patient_f) +
+  theme(axis.text.x = element_blank(), axis.title.x = element_blank(), axis.ticks.x = element_blank())
+top_verrucos_plot1
+
+top_verrucos_plot2 <- plot_bar(top_verrucos, x = "Patient_f", fill = "Phylum") +
+  geom_bar(stat = "identity", position = "stack", size = 0)
+top_verrucos_plot2
 ```
 
 Plot top 20 OTUs and color by family. Requested for the R24 group.
