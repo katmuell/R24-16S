@@ -26,7 +26,7 @@ Merge ASV count and taxonomy files
 otu_file <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/second_biom/2020-10-16_update/otu-table.txt"
 taxonomy_file <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/second_biom/2020-10-16_update/taxonomy.tsv"
 
-otu_table <- read.table(file = biom_file, header = TRUE)
+otu_table <- read.table(file = otu_file, header = TRUE)
 tax <- read.table(file = taxonomy_file, sep = '\t', header = TRUE)
 merged <- merge(otu_table, tax, by.x = c("OTUID"), by.y = c("OTUID"))
 write.table(merged, file = "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/second_biom/2020-10-16_update/combined_otu_tax.txt", sep = '\t', col.names = TRUE, row.names = FALSE)
@@ -159,7 +159,30 @@ complete_plot
 ## Analysis of Recent Samples
 Samples submitted by Holly in 2020
 
-```{r}
+Merge ASV count and taxonomy files
+```{r, eval=FALSE}
+otu_file_1 <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/2020-07-22/phyloseq/begin_1_otu_table.txt"
+taxonomy_file_1 <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/2020-07-22/phyloseq/begin_1_taxonomy.tsv"
 
+otu_file_2 <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/2020-07-22/phyloseq/begin_2_otu_table.txt"
+taxonomy_file_2 <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/2020-07-22/phyloseq/begin_2_taxonomy.tsv"
+
+otu_file_3 <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/2020-07-22/phyloseq/begin_3_otu_table.txt"
+taxonomy_file_3 <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/2020-07-22/phyloseq/begin_3_taxonomy.tsv"
+
+otu_table_1 <- read.table(file = otu_file_1, header = TRUE)
+tax_1 <- read.table(file = taxonomy_file_1, sep = '\t', header = TRUE)
+merged_1 <- merge(otu_table_1, tax_1, by.x = c("OTUID"), by.y = c("OTUID"))
+write.table(merged_1, file = "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/2020-07-22/phyloseq/begin_1_combined_otu_tax.txt", sep = '\t', col.names = TRUE, row.names = FALSE)
+
+otu_table_2 <- read.table(file = otu_file_2, header = TRUE)
+tax_2 <- read.table(file = taxonomy_file_2, sep = '\t', header = TRUE)
+merged_2 <- merge(otu_table_2, tax_2, by.x = c("OTUID"), by.y = c("OTUID"))
+write.table(merged_2, file = "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/2020-07-22/phyloseq/begin_2_combined_otu_tax.txt", sep = '\t', col.names = TRUE, row.names = FALSE)
+
+otu_table_3 <- read.table(file = otu_file_3, header = TRUE)
+tax_3 <- read.table(file = taxonomy_file_3, sep = '\t', header = TRUE)
+merged_3 <- merge(otu_table_3, tax_3, by.x = c("OTUID"), by.y = c("OTUID"))
+write.table(merged_3, file = "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/2020-07-22/phyloseq/begin_3_combined_otu_tax.txt", sep = '\t', col.names = TRUE, row.names = FALSE)
 ```
 
