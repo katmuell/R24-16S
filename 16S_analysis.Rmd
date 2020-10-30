@@ -31,7 +31,7 @@ tax <- read.table(file = taxonomy_file, sep = '\t', header = TRUE)
 merged <- merge(otu_table, tax, by.x = c("OTUID"), by.y = c("OTUID"))
 write.table(merged, file = "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/second_biom/2020-10-16_update/combined_otu_tax.txt", sep = '\t', col.names = TRUE, row.names = FALSE)
 ```
-The resulting file was then used to create the otu and taxonomy files used in later steps. For ASV, I copied the OTU and count data into a new csv file. For taxonomy, I copied the OTU and taxon data into a new csv file. The taxon data was then split into Kindom, Phylum, etc. using the text-to-columns option in Excel.
+The resulting file was then used to create the otu and taxonomy files used in later steps. For ASV, I copied the OTU and count data into a new csv file. For taxonomy, I copied the OTU and taxon data into a new csv file. The taxon data was then split into Kingdom, Phylum, etc. using the text-to-columns option in Excel.
 
 Load files into phyloseq
 ```{r}
@@ -159,26 +159,32 @@ complete_plot
 ## Analysis of Recent Samples
 Samples submitted by Holly in 2020
 
-Merge ASV count and taxonomy files
+Merge ASV count and taxonomy files for part 1
 ```{r, eval=FALSE}
 otu_file_1 <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/2020-07-22/phyloseq/begin_1_otu_table.txt"
 taxonomy_file_1 <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/2020-07-22/phyloseq/begin_1_taxonomy.tsv"
-
-otu_file_2 <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/2020-07-22/phyloseq/begin_2_otu_table.txt"
-taxonomy_file_2 <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/2020-07-22/phyloseq/begin_2_taxonomy.tsv"
-
-otu_file_3 <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/2020-07-22/phyloseq/begin_3_otu_table.txt"
-taxonomy_file_3 <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/2020-07-22/phyloseq/begin_3_taxonomy.tsv"
 
 otu_table_1 <- read.table(file = otu_file_1, header = TRUE)
 tax_1 <- read.table(file = taxonomy_file_1, sep = '\t', header = TRUE)
 merged_1 <- merge(otu_table_1, tax_1, by.x = c("OTUID"), by.y = c("OTUID"))
 write.table(merged_1, file = "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/2020-07-22/phyloseq/begin_1_combined_otu_tax.txt", sep = '\t', col.names = TRUE, row.names = FALSE)
+```
+
+Merge ASV count and taxonomy files for part 2
+```{r, eval=FALSE}
+otu_file_2 <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/2020-07-22/phyloseq/begin_2_otu_table.txt"
+taxonomy_file_2 <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/2020-07-22/phyloseq/begin_2_taxonomy.tsv"
 
 otu_table_2 <- read.table(file = otu_file_2, header = TRUE)
 tax_2 <- read.table(file = taxonomy_file_2, sep = '\t', header = TRUE)
 merged_2 <- merge(otu_table_2, tax_2, by.x = c("OTUID"), by.y = c("OTUID"))
 write.table(merged_2, file = "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/2020-07-22/phyloseq/begin_2_combined_otu_tax.txt", sep = '\t', col.names = TRUE, row.names = FALSE)
+```
+
+Merge ASV count and taxonomy files for part 3
+```{r, eval=FALSE}
+otu_file_3 <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/2020-07-22/phyloseq/begin_3_otu_table.txt"
+taxonomy_file_3 <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/2020-07-22/phyloseq/begin_3_taxonomy.tsv"
 
 otu_table_3 <- read.table(file = otu_file_3, header = TRUE)
 tax_3 <- read.table(file = taxonomy_file_3, sep = '\t', header = TRUE)
@@ -186,3 +192,83 @@ merged_3 <- merge(otu_table_3, tax_3, by.x = c("OTUID"), by.y = c("OTUID"))
 write.table(merged_3, file = "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/2020-07-22/phyloseq/begin_3_combined_otu_tax.txt", sep = '\t', col.names = TRUE, row.names = FALSE)
 ```
 
+Load files into phyloseq for part 1
+```{r}
+otu_matrix_file_1 <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/2020-07-22/phyloseq/begin_1_otu-matrix.csv"
+taxonomy_matrix_file_1 <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/2020-07-22/phyloseq/begin_1_taxonomy-matrix.csv"
+map_file_1 <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/2020-07-22/2020-07-22_mapping_begin1.txt"
+
+otu_matrix_1 <- read.csv(otu_matrix_file_1, row.names = 1, check.names = FALSE)
+otu_matrix_1 <- as.matrix(otu_matrix_1)
+
+taxonomy_matrix_1 <- read.csv(taxonomy_matrix_file_1, row.names = 1)
+taxonomy_matrix_1 <- as.matrix(taxonomy_matrix_1)
+
+metadata_1 <- read_delim(map_file_1, "\t", escape_double = FALSE, trim_ws = TRUE)
+meta_df_1 <- metadata_1 %>% as.data.frame()
+row.names(meta_df_1) <- metadata_1$SampleID
+```
+Load files into phyloseq for part 2
+```{r}
+otu_matrix_file_2 <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/2020-07-22/phyloseq/begin_2_otu-matrix.csv"
+taxonomy_matrix_file_2 <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/2020-07-22/phyloseq/begin_2_taxonomy-matrix.csv"
+map_file_2 <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/2020-07-22/2020-07-22_mapping_begin2.txt"
+
+otu_matrix_2 <- read.csv(otu_matrix_file_2, row.names = 1, check.names = FALSE)
+otu_matrix_2 <- as.matrix(otu_matrix_2)
+
+taxonomy_matrix_2 <- read.csv(taxonomy_matrix_file_2, row.names = 1)
+taxonomy_matrix_2 <- as.matrix(taxonomy_matrix_2)
+
+metadata_2 <- read_delim(map_file_2, "\t", escape_double = FALSE, trim_ws = TRUE)
+meta_df_2 <- metadata_2 %>% as.data.frame()
+row.names(meta_df_2) <- metadata_2$SampleID
+```
+
+Load files into phyloseq for part 3
+```{r}
+otu_matrix_file_3 <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/2020-07-22/phyloseq/begin_3_otu-matrix.csv"
+taxonomy_matrix_file_3 <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/2020-07-22/phyloseq/begin_3_taxonomy-matrix.csv"
+map_file_3 <- "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/2020-07-22/2020-07-22_mapping_begin3-9.txt"
+
+otu_matrix_3 <- read.csv(otu_matrix_file_3, row.names = 1, check.names = FALSE)
+otu_matrix_3 <- as.matrix(otu_matrix_3)
+
+taxonomy_matrix_3 <- read.csv(taxonomy_matrix_file_3, row.names = 1)
+taxonomy_matrix_3 <- as.matrix(taxonomy_matrix_3)
+
+metadata_3 <- read_delim(map_file_3, "\t", escape_double = FALSE, trim_ws = TRUE)
+meta_df_3 <- metadata_3 %>% as.data.frame()
+row.names(meta_df_3) <- metadata_3$SampleID
+```
+Import as phyloseq objects and merge into one
+```{r}
+otu_1 <- otu_table(otu_matrix_1, taxa_are_rows = TRUE)
+tax_1 <- tax_table(taxonomy_matrix_1)
+meta_1 <- sample_data(meta_df_1)
+
+otu_2 <- otu_table(otu_matrix_2, taxa_are_rows = TRUE)
+tax_2 <- tax_table(taxonomy_matrix_2)
+meta_2 <- sample_data(meta_df_2)
+
+otu_3 <- otu_table(otu_matrix_3, taxa_are_rows = TRUE)
+tax_3 <- tax_table(taxonomy_matrix_3)
+meta_3 <- sample_data(meta_df_3)
+
+physeq1 <- phyloseq(otu_1, tax_1, meta_1)
+glom1 <- tax_glom(physeq1, taxrank = "Species")
+physeq2 <- phyloseq(otu_2, tax_2, meta_2)
+glom2 <- tax_glom(physeq2, taxrank = "Species")
+physeq3 <- phyloseq(otu_3, tax_3, meta_3)
+glom3 <- tax_glom(physeq2, taxrank = "Species")
+
+physeq_hiseq <- merge_phyloseq(glom1, glom2, glom3)
+physeq_hiseq
+```
+
+Plot top 20 OTUs and color by family. Requested for the R24 group.
+```{r}
+hiseq_perc <- transform_sample_counts(physeq_hiseq, function(x) 100 * x/sum(x))
+hiseq_plot <- Calc.Top20.fam(hiseq_perc, "Recent Samples")
+hiseq_plot
+```
