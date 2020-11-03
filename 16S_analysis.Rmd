@@ -189,15 +189,10 @@ We decided to look at 16S samples beyond those stools that we have isolates for.
 ```{r}
 physeq_perc <- transform_sample_counts(physeq, function(x) 100 * x/sum(x))
 baseline_whole <- subset_samples(physeq_perc, Visit_number == 1)
+endpoint_whole <- subset_samples(physeq_perc, Visit_number == 5)
 ```
 
-Take only baseline visits
-```{r}
-base_whole_plot <- plot_bar(baseline_whole, x = "Patient", fill = "Phylum") +
-  geom_bar(stat = "identity", position = "stack", size = 0) +
-  labs(title = "Baseline")
-base_whole_plot
-```
+Baseline visits
 ```{r}
 test_df <- psmelt(baseline_whole)
 
@@ -219,6 +214,25 @@ test_plot <- ggplot(test_df, aes(x = Patient, y = Abundance, factor(Phylum), fil
 test_plot
 ```
 
+Endpoint visits
+```{r}
+whole_end_df <- psmelt(endpoint_whole)
+
+end_verruco <- whole_end_df %>%
+  filter(Phylum == "D_1__Verrucomicrobia") %>%
+  group_by(Patient) %>%
+  summarise(verruco_abundance = sum(Abundance)) %>%
+  as.data.frame()
+end_verruco <- end_verruco[order(-end_verruco$verruco_abundance),]
+whole_end_df$Patient <- factor(whole_end_df$Patient, levels = end_verruco$Patient)
+
+whole_end_plot <- ggplot(whole_end_df, aes(x = Patient, y = Abundance, factor(Phylum), fill = factor(Phylum))) +
+  geom_bar(stat = "identity", position = "stack") +
+  scale_fill_manual(values = phyla_palette) +
+  labs(fill = "Phylum") +
+  theme(axis.text.x = element_text(angle = 45))
+whole_end_plot
+```
 
 ## Analysis of Recent Samples
 Samples submitted by Holly in 2020
