@@ -17,6 +17,8 @@ library(dplyr)
 library(ggplot2)
 library(cowplot)
 library(RColorBrewer)
+
+getPalette = colorRampPalette(brewer.pal(9, "Set1"))
 ```
 
 ## Analysis of Interim Samples
@@ -194,24 +196,23 @@ endpoint_whole <- subset_samples(physeq_perc, Visit_number == 5)
 
 Baseline visits
 ```{r}
-test_df <- psmelt(baseline_whole)
+whole_base_df <- psmelt(baseline_whole)
 
-test_verruco <- test_df %>%
+base_verruco <- whole_base_df %>%
   filter(Phylum == "D_1__Verrucomicrobia") %>%
   group_by(Patient) %>%
   summarise(verruco_abundance = sum(Abundance)) %>%
   as.data.frame()
-test_verruco <- test_verruco[order(-test_verruco$verruco_abundance),]
-test_df$Patient <- factor(test_df$Patient, levels = test_verruco$Patient)
+base_verruco <- base_verruco[order(-base_verruco$verruco_abundance),]
+whole_base_df$Patient <- factor(whole_base_df$Patient, levels = base_verruco$Patient)
 
-getPalette = colorRampPalette(brewer.pal(9, "Set1"))
 phyla_palette = getPalette(25)
-test_plot <- ggplot(test_df, aes(x = Patient, y = Abundance, factor(Phylum), fill = factor(Phylum))) +
+whole_base_plot <- ggplot(whole_base_df, aes(x = Patient, y = Abundance, factor(Phylum), fill = factor(Phylum))) +
   geom_bar(stat = "identity", position = "stack") +
   scale_fill_manual(values = phyla_palette) +
   labs(fill = "Phylum") +
   theme(axis.text.x = element_text(angle = 45))
-test_plot
+whole_base_plot
 ```
 
 Endpoint visits
