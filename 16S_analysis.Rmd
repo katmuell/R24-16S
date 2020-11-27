@@ -283,6 +283,20 @@ base_end_plot2 <- ggplot(base_end_df, aes(x = Visit_number, y = Abundance, facto
 base_end_plot2
 ```
 
+We also want a graph for all samples, faceted by PID
+```{r}
+physeq_df <- psmelt(physeq_perc)
+all_by_patient_plot <- ggplot(physeq_df, aes(x = Visit_number, y = Abundance, factor(Phylum), fill = factor(Phylum))) +
+  facet_wrap(~Patient) +
+  geom_bar(stat = "identity", position = "stack") +
+  scale_fill_manual(values = phyla_palette) +
+  labs(fill = "Phylum") +
+  xlab("Visit") +
+  theme(axis.text.x = element_blank())
+all_by_patient_plot
+```
+
+
 ## Analysis of Recent Samples
 Samples submitted by Holly in 2020
 
