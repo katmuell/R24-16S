@@ -302,11 +302,13 @@ obese_plot <- ggplot(obese_df, aes(x = Visit_number, y = Abundance, factor(Phylu
 obese_plot
 ```
 ```{r}
-healthy_plot <- ggplot(healthy_df, aes(x = Patient, y = Abundance, factor(Phylum), fill = factor(Phylum))) +
+healthy_plot <- ggplot(healthy_df, aes(x = Visit_number, y = Abundance, factor(Phylum), fill = factor(Phylum))) +
   geom_bar(stat = "identity", position = "stack") +
+  facet_wrap(~Patient) +
   scale_fill_manual(values = phyla_palette) +
   labs(fill = "Phylum") +
-  xlab("Patient ID")
+  xlab("Patient ID") +
+  theme(axis.text.x = element_blank())
 healthy_plot
 ```
 
