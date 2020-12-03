@@ -427,3 +427,29 @@ hiseq_perc <- transform_sample_counts(physeq_hiseq, function(x) 100 * x/sum(x))
 hiseq_plot <- Calc.Top20.fam(hiseq_perc, "Recent Samples")
 hiseq_plot
 ```
+
+Jay put together a phyloseq containing the results of his analysis. Because this was a larger set of samples than I had, I will use this to try to fill in %Verruco for our supplemental table.
+
+```{r}
+phyloseq_subset_AHA <- readRDS("C:/Users/katmu/Downloads/phyloseq_subset_AHA.rds")
+phyloseq_subset_AHA
+```
+
+```{r}
+phyloseq_perc <- transform_sample_counts(phyloseq_subset_AHA, function(x) 100 * x/sum(x))
+phyla_only <- tax_glom(phyloseq_perc, "phylum")
+phyla_only
+```
+
+```{r}
+phyla_df <- psmelt(phyla_only)
+
+combined_phyla <- phyla_perc_df %>% group_by(phylum, Sample) %>% summarise(sum_phylum = sum(Abundance))
+
+verrucos_only<- combined_phyla %>% filter(phylum == "Verrucomicrobiota")
+```
+
+```{r}
+write.csv(verrucos_only, "C:/Users/katmu/Dropbox/Valdivia Lab/Projects/Clinical Isolates/Data/Data_for_analysis/Community_Analysis/Jay_analysis_verrucos.csv", row.names = FALSE)
+```
+
