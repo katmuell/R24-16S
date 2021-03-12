@@ -19,6 +19,7 @@ library(ggplot2)
 #Define Paths
 ```{r}
 r24.rds = "../../Data/Data_for_analysis/Community_Analysis/full_R24/phyloseq_r24_complete_16S_metadata_corrected.rds"
+out.dir = "../../Data/Data_for_analysis/Community_Analysis/full_R24"
 ```
 
 #Load and Check Phyloseq Object
@@ -29,4 +30,15 @@ print(r24.ps)
 
 ```{r}
 sample_variables(r24.ps)
+```
+##Processing
+
+#Convert ASV Counts to Relative Abundance
+```{r}
+r24.ps.rel <- r24.ps %>%
+  transform_sample_counts(function(x) x / sum(x))
+```
+
+```{r}
+head(sample_sums(r24.ps.rel))
 ```
