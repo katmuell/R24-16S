@@ -1,0 +1,32 @@
+---
+title: "Full Set Analysis"
+author: "Katherine Mueller"
+date: "3/12/2021"
+output: html_document
+---
+
+##Setup
+
+#Load Libraries
+```{r}
+library(readr)
+library(phyloseq)
+library(tibble)
+library(dplyr)
+library(ggplot2)
+```
+
+#Define Paths
+```{r}
+r24.rds = "../../Data/Data_for_analysis/Community_Analysis/full_R24/phyloseq_r24_complete_16S_metadata_corrected.rds"
+```
+
+#Load and Check Phyloseq Object
+```{r}
+r24.ps = read_rds(r24.rds)
+print(r24.ps)
+```
+
+```{r}
+sample_variables(r24.ps)
+```
