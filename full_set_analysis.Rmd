@@ -14,6 +14,7 @@ library(phyloseq)
 library(tibble)
 library(dplyr)
 library(ggplot2)
+library(lefser)
 ```
 
 #Define Paths
@@ -33,12 +34,19 @@ sample_variables(r24.ps)
 ```
 ##Processing
 
+#Filter for Patients and Controls
+```{r}
+people.ps <- r24.ps %>%
+  subset_samples(group %in% c("HWC", "OB"))
+print(people.ps)
+```
+
 #Convert ASV Counts to Relative Abundance
 ```{r}
-r24.ps.rel <- r24.ps %>%
+people.ps.rel <- people.ps %>%
   transform_sample_counts(function(x) x / sum(x))
 ```
 
 ```{r}
-head(sample_sums(r24.ps.rel))
+head(sample_sums(people.ps.rel))
 ```
