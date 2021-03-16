@@ -85,7 +85,7 @@ names(verrucos)[1] <- "percent"
 
 #Determine +/- Verruco based on a 0.01% cutoff
 verrucos <- verrucos %>%
-  mutate(has_verruco = ifelse(percent >= 0.0001, 1, 0))
+  mutate(has_verruco = ifelse(percent >= 0.0001, "VerrucoPositive", "VerrucoNegative"))
 ```
 
 #Assign New Variables
@@ -96,4 +96,18 @@ sample_data(people.ps.rel)$verruco_presence <- verrucos$has_verruco
 
 ```{r}
 sample_variables(people.ps.rel)
+```
+
+##LEfSe Analysis
+```{r}
+ps.family <- people.ps.rel %>%
+  tax_glom(taxrank = "Family")
+
+lef <- lefse(ps.family,
+             class = "verruco_presence",
+             multicls_strat = TRUE)
+```
+
+```{r}
+plot_ef_bar(lef)
 ```
