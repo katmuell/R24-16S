@@ -14,7 +14,7 @@ library(phyloseq)
 library(tibble)
 library(dplyr)
 library(ggplot2)
-library(lefser)
+library(microbiomeMarker)
 ```
 
 #Define Paths
@@ -33,10 +33,27 @@ print(r24.ps)
 sample_variables(r24.ps)
 ```
 ##Processing
+#Rename Taxa Titles
+```{r}
+taxa_table <- tax_table(r24.ps) %>%
+  as.data.frame() %>%
+  rename(Kingdom = domain, Phylum = phylum, Class = class, Order = order, Family = family, Genus = genus, Species = species) %>%
+  as.matrix() %>%
+  tax_table()
+```
+
+#Recreate phyloseq object
+```{r}
+asvs <- otu_table(r24.ps)
+meta <- sample_data(r24.ps)
+
+r24.ps.goodtaxa <- phyloseq(asvs, meta, taxa_table)
+print(r24.ps.goodtaxa)
+```
 
 #Filter for Patients and Controls
 ```{r}
-people.ps <- r24.ps %>%
+people.ps <- r24.ps.goodtaxa %>%
   subset_samples(group %in% c("HWC", "OB"))
 print(people.ps)
 ```
