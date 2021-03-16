@@ -67,3 +67,33 @@ people.ps.rel <- people.ps %>%
 ```{r}
 head(sample_sums(people.ps.rel))
 ```
+
+##Make Verruco Abundance into Sample Variables
+#Calculate Phylum-level Abundance
+```{r}
+people.ps.rel.verrucos <- people.ps.rel %>%
+  subset_taxa(Phylum == "Verrucomicrobiota") %>%
+  tax_glom("Phylum")
+print(people.ps.rel.verrucos)
+```
+```{r}
+#First/original column is percent verruco
+verrucos <- people.ps.rel.verrucos %>%
+  otu_table() %>%
+  as.data.frame()
+names(verrucos)[1] <- "percent"
+
+#Determine +/- Verruco based on a 0.01% cutoff
+verrucos <- verrucos %>%
+  mutate(has_verruco = ifelse(percent >= 0.0001, 1, 0))
+```
+
+#Assign New Variables
+```{r}
+sample_data(people.ps.rel)$verruco_abund <- verrucos$percent
+sample_data(people.ps.rel)$verruco_presence <- verrucos$has_verruco
+```
+
+```{r}
+sample_variables(people.ps.rel)
+```
