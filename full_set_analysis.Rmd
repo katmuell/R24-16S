@@ -111,3 +111,27 @@ lef <- lefse(ps.family,
 ```{r}
 plot_ef_bar(lef)
 ```
+
+##Investigation of Akkermansia ASVs
+I want to determine the sequences of Akkermansia ASVs in order to align them with the V3-V4 sequences of our isolates and determine which phylogroups these ASVs are likely to belong to.
+#Pull Akkermansia ASVs
+Filter through all the taxa to pull out just those that are labeled as Akkermansia, then prune for just those ASVs that appear at an average abundance of 0.01% in the entire data set.
+```{r}
+mean_cutoff = 0.001
+mean_test = function(x) {
+  mean(x) >= mean_cutoff
+}
+
+people.ps.rel.akks <- people.ps.rel %>%
+  subset_taxa(Genus == "Akkermansia") %>%
+  filter_taxa(mean_test, prune = TRUE)
+print(people.ps.rel.akks)
+```
+This resulted in two Akkermansia ASVs, so now I want the sequences.
+```{r}
+akks <- people.ps.rel.akks %>%
+  otu_table() %>%
+  as.data.frame()
+colnames(akks)[1]
+colnames(akks)[2]
+```
