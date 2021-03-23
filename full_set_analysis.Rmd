@@ -135,7 +135,7 @@ akks.ps.rel.0001mean <- akks.ps.rel %>%
 print(akks.ps.rel.0001mean)
 ```
 
-This resulted in two Akkermansia ASVs, so now I want the sequences.
+This resulted in three Akkermansia ASVs, so now I want the sequences.
 ```{r}
 akks <- akks.ps.rel.0001mean %>%
   otu_table() %>%
