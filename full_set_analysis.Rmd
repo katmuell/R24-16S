@@ -130,8 +130,7 @@ mean_test = function(x) {
   mean(x) >= mean_cutoff
 }
 
-akks.ps.rel.0001mean <- people.ps.rel %>%
-  subset_taxa(Genus == "Akkermansia") %>%
+akks.ps.rel.0001mean <- akks.ps.rel %>%
   filter_taxa(mean_test, prune = TRUE)
 print(akks.ps.rel.0001mean)
 ```
