@@ -15,6 +15,7 @@ library(tibble)
 library(dplyr)
 library(ggplot2)
 library(microbiomeMarker)
+library(tidyr)
 ```
 
 #Define Paths
@@ -173,4 +174,37 @@ akks <- akks.ps.rel.0001anysample %>%
   otu_table() %>%
   as.data.frame()
 colnames(akks)
+```
+
+I want to make a box plots of the abundances of these ASVs to see if I really need all 15, or can go with one of the more stringent filters.
+```{r}
+#rename sequences to be human-distinguishable
+colnames(akks)[1] <- "mean-1"
+colnames(akks)[2] <- "mean-2"
+colnames(akks)[3] <- "mean-3"
+colnames(akks)[4] <- "any1-4"
+colnames(akks)[5] <- "any01-5"
+colnames(akks)[6] <- "any01-6"
+colnames(akks)[7] <- "any01-7"
+colnames(akks)[8] <- "any01-8"
+colnames(akks)[9] <- "any01-9"
+colnames(akks)[10] <- "any01-10"
+colnames(akks)[11] <- "any01-11"
+colnames(akks)[12] <- "any01-12"
+colnames(akks)[13] <- "any01-13"
+colnames(akks)[14] <- "any01-14"
+colnames(akks)[15] <- "any01-15"
+```
+
+```{r}
+#make akks dataframe tidy
+akks.long <- akks %>%
+  gather(ASV, Abundance, "mean-1":"any01-15")
+
+#plot boxes
+akks.boxplot <- akks.long %>%
+  ggplot(aes(x = ASV, y = Abundance)) +
+  geom_point() +
+  geom_jitter()
+akks.boxplot
 ```
