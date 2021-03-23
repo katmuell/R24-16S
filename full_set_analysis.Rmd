@@ -114,15 +114,23 @@ plot_ef_bar(lef)
 
 ##Investigation of Akkermansia ASVs
 I want to determine the sequences of Akkermansia ASVs in order to align them with the V3-V4 sequences of our isolates and determine which phylogroups these ASVs are likely to belong to.
-#Pull Akkermansia ASVs
+
+Before any filtering, I should determine how many Akkermansia ASVs have been identified in total.
+```{r}
+akks.ps.rel <- people.ps.rel %>%
+  subset_taxa(Genus == "Akkermansia")
+print(akks.ps.rel)
+```
+
+#First-pass Filtering
 Filter through all the taxa to pull out just those that are labeled as Akkermansia, then prune for just those ASVs that appear at an average abundance of 0.01% in the entire data set.
 ```{r}
-mean_cutoff = 0.001
+mean_cutoff = 0.0001
 mean_test = function(x) {
   mean(x) >= mean_cutoff
 }
 
-people.ps.rel.akks <- people.ps.rel %>%
+akks.ps.rel.0001mean <- people.ps.rel %>%
   subset_taxa(Genus == "Akkermansia") %>%
   filter_taxa(mean_test, prune = TRUE)
 print(people.ps.rel.akks)
@@ -135,3 +143,5 @@ akks <- people.ps.rel.akks %>%
 colnames(akks)[1]
 colnames(akks)[2]
 ```
+
+#Less stringnent filtering
