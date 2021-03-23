@@ -123,7 +123,7 @@ print(akks.ps.rel)
 ```
 
 #First-pass Filtering
-Filter through all the taxa to pull out just those that are labeled as Akkermansia, then prune for just those ASVs that appear at an average abundance of 0.01% in the entire data set.
+Filter through all the taxa to pull out just those that are labeled as Akkermansia, then prune for just those ASVs that appear at an average abundance of 0.01% or higher in the entire data set.
 ```{r}
 mean_cutoff = 0.0001
 mean_test = function(x) {
@@ -134,13 +134,43 @@ akks.ps.rel.0001mean <- akks.ps.rel %>%
   filter_taxa(mean_test, prune = TRUE)
 print(akks.ps.rel.0001mean)
 ```
+
 This resulted in two Akkermansia ASVs, so now I want the sequences.
 ```{r}
-akks <- people.ps.rel.akks %>%
+akks <- akks.ps.rel.0001mean %>%
   otu_table() %>%
   as.data.frame()
-colnames(akks)[1]
-colnames(akks)[2]
+colnames(akks)
 ```
 
 #Less stringnent filtering
+I want to see how many Akkermansia ASVs there are that appear at an abundance of 0.1% or 0.01% in at least one sample.
+```{r}
+min_fraction = 0.001
+min_samples = 1
+akks.ps.rel.001anysample <- akks.ps.rel %>%
+  filter_taxa(function(x) sum(x >= min_fraction) >= min_samples,
+              prune = TRUE)
+print(akks.ps.rel.001anysample)
+```
+```{r}
+akks <- akks.ps.rel.001anysample %>%
+  otu_table() %>%
+  as.data.frame()
+colnames(akks)
+```
+
+```{r}
+min_fraction = 0.0001
+min_samples = 1
+akks.ps.rel.0001anysample <- akks.ps.rel %>%
+  filter_taxa(function(x) sum(x >= min_fraction) >= min_samples,
+              prune = TRUE)
+print(akks.ps.rel.0001anysample)
+```
+```{r}
+akks <- akks.ps.rel.0001anysample %>%
+  otu_table() %>%
+  as.data.frame()
+colnames(akks)
+```
