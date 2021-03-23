@@ -133,7 +133,7 @@ mean_test = function(x) {
 akks.ps.rel.0001mean <- people.ps.rel %>%
   subset_taxa(Genus == "Akkermansia") %>%
   filter_taxa(mean_test, prune = TRUE)
-print(people.ps.rel.akks)
+print(akks.ps.rel.0001mean)
 ```
 This resulted in two Akkermansia ASVs, so now I want the sequences.
 ```{r}
