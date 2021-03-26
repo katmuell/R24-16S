@@ -99,6 +99,13 @@ sample_data(people.ps.rel)$verruco_presence <- verrucos$has_verruco
 sample_variables(people.ps.rel)
 ```
 
+How many samples have Verrucos?
+```{r}
+nsamples(people.ps.rel)
+nsamples(subset_samples(people.ps.rel, verruco_presence == "VerrucoPositive"))
+```
+701/790 samples have an abundance of at least 0.01% Verruco. 
+
 ##Investigation of Akkermansia ASVs
 I want to determine the sequences of Akkermansia ASVs in order to align them with the V3-V4 sequences of our isolates and determine which phylogroups these ASVs are likely to belong to.
 
@@ -167,27 +174,27 @@ colnames(akks)
 I want to make a box plots of the abundances of these ASVs to see if I really need all 15, or can go with one of the more stringent filters.
 ```{r}
 #rename sequences to be human-distinguishable
-colnames(akks)[1] <- "mean-1"
-colnames(akks)[2] <- "mean-2"
-colnames(akks)[3] <- "mean-3"
-colnames(akks)[4] <- "any1-4"
-colnames(akks)[5] <- "any01-5"
-colnames(akks)[6] <- "any01-6"
-colnames(akks)[7] <- "any01-7"
-colnames(akks)[8] <- "any01-8"
-colnames(akks)[9] <- "any01-9"
-colnames(akks)[10] <- "any01-10"
-colnames(akks)[11] <- "any01-11"
-colnames(akks)[12] <- "any01-12"
-colnames(akks)[13] <- "any01-13"
-colnames(akks)[14] <- "any01-14"
-colnames(akks)[15] <- "any01-15"
+colnames(akks)[1] <- "mean.1"
+colnames(akks)[2] <- "mean.2"
+colnames(akks)[3] <- "mean.3"
+colnames(akks)[4] <- "any1.4"
+colnames(akks)[5] <- "any01.5"
+colnames(akks)[6] <- "any01.6"
+colnames(akks)[7] <- "any01.7"
+colnames(akks)[8] <- "any01.8"
+colnames(akks)[9] <- "any01.9"
+colnames(akks)[10] <- "any01.10"
+colnames(akks)[11] <- "any01.11"
+colnames(akks)[12] <- "any01.12"
+colnames(akks)[13] <- "any01.13"
+colnames(akks)[14] <- "any01.14"
+colnames(akks)[15] <- "any01.15"
 ```
 
 ```{r}
 #make akks dataframe tidy
 akks.long <- akks %>%
-  gather(ASV, Abundance, "mean-1":"any01-15")
+  gather(ASV, Abundance, "mean.1":"any01.15")
 
 #plot boxes
 akks.boxplot <- akks.long %>%
@@ -198,6 +205,47 @@ akks.boxplot
 ```
 
 Based on an outside comparison of the ASV sequences and the V3-V4 sequences of our isolates, as well as the near-zero abundance of all but the top three ASVs, I will concentrate on just those three.
+From the outside comparison, I had determined that the mean-1 SV is most likely an AmI, the mean-2 SV is an AmIV, and the mean-3 SV is an AmII.
+
+How many samples have Akkermansia when we're only looking at those top three ASVs?
+```{r}
+#Determine presence/absence of each phylogroup
+akks <- akks %>%
+  select(mean.1, mean.2, mean.3) %>%
+  mutate(Akk_abundance = rowSums(.),
+         has_AmI = ifelse(mean.1 >= 0.0001, "AmI_Positive", "AmI_Negative"),
+         has_AmII = ifelse(mean.3 >= 0.0001, "AmII_Positive", "AmII_Negative"),
+         has_AmIV = ifelse(mean.2 >= 0.0001, "AmIV_Positive", "AmIV_Negative"),
+         has_Akk = ifelse(Akk_abundance >= 0.0001, "Akk_Positive", "Akk_Negative"))
+
+#Assign new variables
+sample_data(people.ps.rel)$AmI_abund <- akks$mean.1
+sample_data(people.ps.rel)$AmI_presence <- akks$has_AmI
+sample_data(people.ps.rel)$AmII_abund <- akks$mean.3
+sample_data(people.ps.rel)$AmII_presence <- akks$has_AmII
+sample_data(people.ps.rel)$AmIV_abund <- akks$mean.2
+sample_data(people.ps.rel)$AmIV_presence <- akks$has_AmIV
+sample_data(people.ps.rel)$Akk_abund <- akks$Akk_abundance
+sample_data(people.ps.rel)$Akk_presence <- akks$has_Akk
+```
+
+```{r}
+sample_variables(people.ps.rel)
+```
+
+```{r}
+nsamples(people.ps.rel)
+nsamples(subset_samples(people.ps.rel, Akk_presence == "Akk_Positive"))
+nsamples(subset_samples(people.ps.rel, AmI_presence == "AmI_Positive"))
+nsamples(subset_samples(people.ps.rel, AmII_presence == "AmII_Positive"))
+nsamples(subset_samples(people.ps.rel, AmIV_presence == "AmIV_Positive"))
+nsamples(subset_samples(people.ps.rel, AmI_presence == "AmI_Positive" & AmII_presence == "AmII_Positive"))
+nsamples(subset_samples(people.ps.rel, AmI_presence == "AmI_Positive" & AmIV_presence == "AmIV_Positive"))
+nsamples(subset_samples(people.ps.rel, AmII_presence == "AmII_Positive" & AmIV_presence == "AmIV_Positive"))
+```
+684/790 samples have an abundance of at least 0.01% Akkermansia from all three ASVs combined. 532 have an abundance of at least 0.01% AmI, 65 have an abundance of at least 0.01% Am2, and 87 have an abundance of at least 0.01% AmIV.
+44 samples contain both AmI and AmII at an abundance of at least 0.01% each. 51 samples contain both AmI and AmIV at at least 0.01% abundance each, and 1 sample contains both AmII and AmIV at at least 0.01% abundance each.
+
 
 ##LEfSe Analysis
 ```{r}
