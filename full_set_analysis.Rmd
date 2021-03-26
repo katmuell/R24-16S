@@ -99,20 +99,6 @@ sample_data(people.ps.rel)$verruco_presence <- verrucos$has_verruco
 sample_variables(people.ps.rel)
 ```
 
-##LEfSe Analysis
-```{r}
-ps.family <- people.ps.rel %>%
-  tax_glom(taxrank = "Family")
-
-lef <- lefse(ps.family,
-             class = "verruco_presence",
-             multicls_strat = TRUE)
-```
-
-```{r}
-plot_ef_bar(lef)
-```
-
 ##Investigation of Akkermansia ASVs
 I want to determine the sequences of Akkermansia ASVs in order to align them with the V3-V4 sequences of our isolates and determine which phylogroups these ASVs are likely to belong to.
 
@@ -154,6 +140,7 @@ akks.ps.rel.001anysample <- akks.ps.rel %>%
               prune = TRUE)
 print(akks.ps.rel.001anysample)
 ```
+
 ```{r}
 akks <- akks.ps.rel.001anysample %>%
   otu_table() %>%
@@ -169,6 +156,7 @@ akks.ps.rel.0001anysample <- akks.ps.rel %>%
               prune = TRUE)
 print(akks.ps.rel.0001anysample)
 ```
+
 ```{r}
 akks <- akks.ps.rel.0001anysample %>%
   otu_table() %>%
@@ -208,3 +196,21 @@ akks.boxplot <- akks.long %>%
   geom_jitter()
 akks.boxplot
 ```
+
+Based on an outside comparison of the ASV sequences and the V3-V4 sequences of our isolates, as well as the near-zero abundance of all but the top three ASVs, I will concentrate on just those three.
+
+##LEfSe Analysis
+```{r}
+ps.family <- people.ps.rel %>%
+  tax_glom(taxrank = "Family")
+
+lef <- lefse(ps.family,
+             class = "verruco_presence",
+             multicls_strat = TRUE)
+```
+
+```{r}
+plot_ef_bar(lef)
+```
+
+
