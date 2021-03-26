@@ -235,7 +235,7 @@ sample_variables(people.ps.rel)
 
 ```{r}
 akk_stats <- data.frame(total_samples = nsamples(people.ps.rel),
-                       total_akk = nsamples(subset_samples(people.ps.rel, Akk_presence == "Akk_Positive")),
+                       total_akk = nsamples(subset_samples(people.ps.rel, AmI_presence == "AmI_Positive" | AmII_presence == "AmII_Positive" | AmIV_presence == "AmIV_Positive")),
                        AmI = nsamples(subset_samples(people.ps.rel, AmI_presence == "AmI_Positive")),
                        AmII = nsamples(subset_samples(people.ps.rel, AmII_presence == "AmII_Positive")),
                        AmIV = nsamples(subset_samples(people.ps.rel, AmIV_presence == "AmIV_Positive")),
@@ -247,7 +247,7 @@ akk_stats <- data.frame(total_samples = nsamples(people.ps.rel),
                        )
 akk_stats
 ```
-684/790 samples have an abundance of at least 0.01% Akkermansia from all three ASVs combined. 532 have an abundance of at least 0.01% AmI, 65 have an abundance of at least 0.01% Am2, and 87 have an abundance of at least 0.01% AmIV.
+588/790 samples have an abundance of at least 0.01% of at least one of the top three Akkermansia ASVs. 532 have an abundance of at least 0.01% AmI, 65 have an abundance of at least 0.01% Am2, and 87 have an abundance of at least 0.01% AmIV.
 44 samples contain both AmI and AmII at an abundance of at least 0.01% each. 51 samples contain both AmI and AmIV at at least 0.01% abundance each, and 1 sample contains both AmII and AmIV at at least 0.01% abundance each. There are no samples that contain all three phylogroups
 
 Does the percentage of samples with each phylogroup differ between the obese and healthy control groups?
@@ -256,9 +256,9 @@ Does the percentage of samples with each phylogroup differ between the obese and
 obese.ps.rel <- people.ps.rel %>%
   subset_samples(group == "OB")
 nsamples(obese.ps.rel)
-nsamples(subset_samples(obese.ps.rel, Akk_presence == "Akk_Positive"))
+nsamples(subset_samples(obese.ps.rel, AmI_presence == "AmI_Positive" | AmII_presence == "AmII_Positive" | AmIV_presence == "AmIV_Positive"))
 
-obese_stats <- c(no_akk = nsamples(subset_samples(obese.ps.rel, Akk_presence == "Akk_Negative")),
+obese_stats <- c(no_akk = nsamples(subset_samples(obese.ps.rel, AmI_presence == "AmI_Negative" & AmII_presence == "AmII_Negative" & AmIV_presence == "AmIV_Negative")),
                           AmI = nsamples(subset_samples(obese.ps.rel, AmI_presence == "AmI_Positive")),
                           AmII = nsamples(subset_samples(obese.ps.rel, AmII_presence == "AmII_Positive")),
                           AmIV = nsamples(subset_samples(obese.ps.rel, AmIV_presence == "AmIV_Positive")),
@@ -274,9 +274,9 @@ obese_stats
 healthy.ps.rel <- people.ps.rel %>%
   subset_samples(group == "HWC")
 nsamples(healthy.ps.rel)
-nsamples(subset_samples(healthy.ps.rel, Akk_presence == "Akk_Positive"))
+nsamples(subset_samples(healthy.ps.rel, AmI_presence == "AmI_Positive" | AmII_presence == "AmII_Positive" | AmIV_presence == "AmIV_Positive"))
 
-healthy_stats <- c(no_akk = nsamples(subset_samples(healthy.ps.rel, Akk_presence == "Akk_Negative")),
+healthy_stats <- c(no_akk = nsamples(subset_samples(healthy.ps.rel, AmI_presence == "AmI_Negative" & AmII_presence == "AmII_Negative" & AmIV_presence == "AmIV_Negative")),
                    AmI = nsamples(subset_samples(healthy.ps.rel, AmI_presence == "AmI_Positive")),
                    AmII = nsamples(subset_samples(healthy.ps.rel, AmII_presence == "AmII_Positive")),
                    AmIV = nsamples(subset_samples(healthy.ps.rel, AmIV_presence == "AmIV_Positive")),
