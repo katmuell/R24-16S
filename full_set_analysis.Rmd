@@ -298,10 +298,39 @@ ps.family <- people.ps.rel %>%
   tax_glom(taxrank = "Family")
 
 lef <- lefse(ps.family,
-             class = "verruco_presence",
+             class = "Akk_presence",
              multicls_strat = TRUE)
 ```
 
 ```{r}
 plot_ef_bar(lef)
 ```
+
+Are there taxa associated with individual phylogroups?
+```{r}
+haveakk.ps.rel <- people.ps.rel %>%
+  subset_samples(Akk_presence == "Akk_Positive")
+
+lef.AmI <- lefse(haveakk.ps.rel,
+                 class = "AmI_presence",
+                 multicls_strat = TRUE)
+lef.AmII <- lefse(haveakk.ps.rel,
+                 class = "AmII_presence",
+                 multicls_strat = TRUE)
+lef.AmIV <- lefse(haveakk.ps.rel,
+                 class = "AmIV_presence",
+                 multicls_strat = TRUE)
+```
+
+```{r}
+plot_ef_bar(lef.AmI)
+```
+
+```{r}
+plot_ef_bar(lef.AmII)
+```
+
+```{r}
+plot_ef_bar(lef.AmIV)
+```
+
