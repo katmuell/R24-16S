@@ -45,7 +45,7 @@ phylogroup_counts <- function(ps, am24) {
     AmII = nsamples(subset_samples(ps, AmII_presence == "AmII_Positive")),
     AmIV = nsamples(subset_samples(ps, AmIV_presence == "AmIV_Positive")),
     AmI_AmII = nsamples(subset_samples(ps, AmI_presence == "AmI_Positive" & AmII_presence == "AmII_Positive")),
-    AMI_AmIV = nsamples(subset_samples(ps, AmI_presence == "AmI_Positive" & AmIV_presence == "AmIV_Positive")))
+    AmI_AmIV = nsamples(subset_samples(ps, AmI_presence == "AmI_Positive" & AmIV_presence == "AmIV_Positive")))
   
   #The last step depends on the presence/absence of the AmII/AmIV combo
   ifelse(am24 == "noAm24",
@@ -234,6 +234,7 @@ akks.boxplot
 Based on an outside comparison of the ASV sequences and the V3-V4 sequences of our isolates, as well as the near-zero abundance of all but the top three ASVs, I will concentrate on just those three.
 From the outside comparison, I had determined that the mean-1 SV is most likely an AmI, the mean-2 SV is an AmIV, and the mean-3 SV is an AmII.
 
+#Count phylogroup presence
 How many samples have Akkermansia when we're only looking at those top three ASVs?
 ```{r}
 #Determine presence/absence of each phylogroup
@@ -288,6 +289,19 @@ obese_stats <- phylogroup_counts(obese.ps.rel, "noAm24")
 healthy_stats <- phylogroup_counts(healthy.ps.rel, "yesAm24")
 
 data.frame(obese_stats, healthy_stats)
+```
+
+It would be better to split up the obese samples, considering that each patient is represented at multiple timepoints. I would like to compare obese at baseline and obese at endpoint with the healthy controls
+```{r}
+obese.baseline.ps <- obese.ps.rel %>%
+  subset_samples(visit == 1) 
+obese.endpoint.ps <- obese.ps.rel %>%
+  subset_samples(visit == 5)
+
+baseline_stats <- phylogroup_counts(obese.baseline.ps, "noAm24")
+endpoint_stats <- phylogroup_counts(obese.endpoint.ps, "noAm24")
+
+data.frame(baseline_stats, endpoint_stats, healthy_stats)
 ```
 
 
