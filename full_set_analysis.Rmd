@@ -279,6 +279,11 @@ akk_stats
 
 Does the percentage of samples with each phylogroup differ between the obese and healthy control groups?
 ```{r}
+obese.ps.rel <- people.ps.rel %>%
+  subset_samples(group == "OB")
+healthy.ps.rel <- people.ps.rel %>%
+  subset_samples(group == "HWC")
+
 obese_stats <- phylogroup_counts(obese.ps.rel, "noAm24")
 healthy_stats <- phylogroup_counts(healthy.ps.rel, "yesAm24")
 
