@@ -33,6 +33,33 @@ print(r24.ps)
 ```{r}
 sample_variables(r24.ps)
 ```
+
+##Functions
+Count the number of times a phylogroup or combination of phylogroups is counted in samples. Takes a phyloseq object and a string. The string needs to be "noAm24" if you don't think that the combination of AmII and AmIV will occur in any samples in order to avoid non-zero dimension errors.
+```{r}
+phylogroup_counts <- function(ps, am24) {
+  #Since the AmII/AmIv combo is the only one that is super rare, every other combo can be counted without error
+  counts <- c(
+    no_akk = nsamples(subset_samples(ps, AmI_presence == "AmI_Negative" & AmII_presence == "AmII_Negative" & AmIV_presence == "AmIV_Negative")),
+    AmI = nsamples(subset_samples(ps, AmI_presence == "AmI_Positive")),
+    AmII = nsamples(subset_samples(ps, AmII_presence == "AmII_Positive")),
+    AmIV = nsamples(subset_samples(ps, AmIV_presence == "AmIV_Positive")),
+    AmI_AmII = nsamples(subset_samples(ps, AmI_presence == "AmI_Positive" & AmII_presence == "AmII_Positive")),
+    AMI_AmIV = nsamples(subset_samples(ps, AmI_presence == "AmI_Positive" & AmIV_presence == "AmIV_Positive")))
+  
+  #The last step depends on the presence/absence of the AmII/AmIV combo
+  ifelse(am24 == "noAm24",
+         #If no Am2/Am4 combo, count is zero
+         counts <- c(counts, AmII_AmIV = 0),
+         #Else, count like usual
+         counts <- c(counts,
+                     AmII_AmIV = nsamples(subset_samples(ps, AmII_presence == "AmII_Positive" & AmIV_presence == "AmIV_Positive")))
+  )
+  
+  return(counts)
+}
+```
+
 ##Processing
 #Rename Taxa Titles
 ```{r}
@@ -137,7 +164,7 @@ akks <- akks.ps.rel.0001mean %>%
 colnames(akks)
 ```
 
-#Less stringnent filtering
+#Less stringent filtering
 I want to see how many Akkermansia ASVs there are that appear at an abundance of 0.1% or 0.01% in at least one sample.
 ```{r}
 min_fraction = 0.001
@@ -252,43 +279,10 @@ akk_stats
 
 Does the percentage of samples with each phylogroup differ between the obese and healthy control groups?
 ```{r}
-#Obese
-obese.ps.rel <- people.ps.rel %>%
-  subset_samples(group == "OB")
-nsamples(obese.ps.rel)
-nsamples(subset_samples(obese.ps.rel, AmI_presence == "AmI_Positive" | AmII_presence == "AmII_Positive" | AmIV_presence == "AmIV_Positive"))
+obese_stats <- phylogroup_counts(obese.ps.rel, "noAm24")
+healthy_stats <- phylogroup_counts(healthy.ps.rel, "yesAm24")
 
-obese_stats <- c(no_akk = nsamples(subset_samples(obese.ps.rel, AmI_presence == "AmI_Negative" & AmII_presence == "AmII_Negative" & AmIV_presence == "AmIV_Negative")),
-                          AmI = nsamples(subset_samples(obese.ps.rel, AmI_presence == "AmI_Positive")),
-                          AmII = nsamples(subset_samples(obese.ps.rel, AmII_presence == "AmII_Positive")),
-                          AmIV = nsamples(subset_samples(obese.ps.rel, AmIV_presence == "AmIV_Positive")),
-                          AmI_AmII = nsamples(subset_samples(obese.ps.rel, AmI_presence == "AmI_Positive" & AmII_presence == "AmII_Positive")),
-                          AMI_AmIV = nsamples(subset_samples(obese.ps.rel, AmI_presence == "AmI_Positive" & AmIV_presence == "AmIV_Positive")),
-                          #The last one results in a non-zero dimensions error, indicating that there are no samples that satisfy these conditions
-                          #nsamples(subset_samples(obese.ps.rel, AmII_presence == "AmII_Positive" & AmIV_presence == "AmIV_Positive"))
-                          AmII_AmIV = 0)
-obese_stats
-```
-```{r}
-#Healthy Controls
-healthy.ps.rel <- people.ps.rel %>%
-  subset_samples(group == "HWC")
-nsamples(healthy.ps.rel)
-nsamples(subset_samples(healthy.ps.rel, AmI_presence == "AmI_Positive" | AmII_presence == "AmII_Positive" | AmIV_presence == "AmIV_Positive"))
-
-healthy_stats <- c(no_akk = nsamples(subset_samples(healthy.ps.rel, AmI_presence == "AmI_Negative" & AmII_presence == "AmII_Negative" & AmIV_presence == "AmIV_Negative")),
-                   AmI = nsamples(subset_samples(healthy.ps.rel, AmI_presence == "AmI_Positive")),
-                   AmII = nsamples(subset_samples(healthy.ps.rel, AmII_presence == "AmII_Positive")),
-                   AmIV = nsamples(subset_samples(healthy.ps.rel, AmIV_presence == "AmIV_Positive")),
-                   AmI_AmII = nsamples(subset_samples(healthy.ps.rel, AmI_presence == "AmI_Positive" & AmII_presence == "AmII_Positive")),
-                   AmI_AmIV = nsamples(subset_samples(healthy.ps.rel, AmI_presence == "AmI_Positive" & AmIV_presence == "AmIV_Positive")),
-                   AmII_AmIV = nsamples(subset_samples(healthy.ps.rel, AmII_presence == "AmII_Positive" & AmIV_presence == "AmIV_Positive")))
-healthy_stats
-```
-
-```{r}
-akk_comps <- data.frame(obese = obese_stats, healthy = healthy_stats)
-akk_comps
+data.frame(obese_stats, healthy_stats)
 ```
 
 
