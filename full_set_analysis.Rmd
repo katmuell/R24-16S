@@ -15,6 +15,7 @@ library(tibble)
 library(dplyr)
 library(ggplot2)
 library(microbiomeMarker)
+library(tidyr)
 library(cowplot)
 ```
 
