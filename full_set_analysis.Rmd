@@ -351,9 +351,21 @@ plot_ef_bar(lef.AmIV)
 ##Distribution of Akkermansia Between Groups
 ```{r}
 group_abundances <- rbind(
-  data.frame(group = "baseline", abundance = sample_data(obese.baseline.ps)$Akk_abund),
-  data.frame(group = "endpoint", abundance = sample_data(obese.endpoint.ps)$Akk_abund),
-  data.frame(group = "healthy", abundance = sample_data(healthy.ps.rel)$Akk_abund)
+  data.frame(group = "baseline",
+             abundance = sample_data(obese.baseline.ps)$Akk_abund,
+             AmI_presence = sample_data(obese.baseline.ps)$AmI_presence,
+             AmII_presence = sample_data(obese.baseline.ps)$AmII_presence,
+             AmIV_presence = sample_data(obese.baseline.ps)$AmIV_presence),
+  data.frame(group = "endpoint",
+             abundance = sample_data(obese.endpoint.ps)$Akk_abund,
+             AmI_presence = sample_data(obese.endpoint.ps)$AmI_presence,
+             AmII_presence = sample_data(obese.endpoint.ps)$AmII_presence,
+             AmIV_presence = sample_data(obese.endpoint.ps)$AmIV_presence),
+  data.frame(group = "healthy",
+             abundance = sample_data(healthy.ps.rel)$Akk_abund,
+             AmI_presence = sample_data(healthy.ps.rel)$AmI_presence,
+             AmII_presence = sample_data(healthy.ps.rel)$AmII_presence,
+             AmIV_presence = sample_data(healthy.ps.rel)$AmIV_presence)
 )
 group_abundances$log_abundance <- log10(group_abundances$abundance)
 ```
@@ -369,39 +381,42 @@ logoverall_distribution <- ggplot(group_abundances, aes(x = log_abundance)) +
 
 Baseline
 ```{r}
-baseline_distribution <- group_abundances %>%
-  filter(group == "baseline") %>%
+baseline_abundances <- group_abundances %>%
+  filter(group == "baseline")
+
+baseline_distribution <- baseline_abundances %>%
   ggplot(aes(x = abundance)) +
   geom_histogram()
 
-logbaseline_distribution <- group_abundances %>%
-  filter(group == "baseline") %>%
+logbaseline_distribution <- baseline_abundances %>%
   ggplot(aes(x = log_abundance)) +
   geom_histogram()
 ```
 
 Endpoint
 ```{r}
-endpoint_distribution <- group_abundances %>%
-  filter(group == "endpoint") %>%
+endpoint_abundances <- group_abundances %>%
+  filter(group == "endpoint")
+
+endpoint_distribution <- endpoint_abundances %>%
   ggplot(aes(x = abundance)) +
   geom_histogram()
 
-logendpoint_distribution <- group_abundances %>%
-  filter(group == "endpoint") %>%
+logendpoint_distribution <- endpoint_abundances %>%
   ggplot(aes(x = log_abundance)) +
   geom_histogram()
 ```
 
 Healthy
 ```{r}
-healthy_distribution <- group_abundances %>%
-  filter(group == "healthy") %>%
+healthy_abundances <- group_abundances %>%
+  filter(group == "healthy")
+
+healthy_distribution <- healthy_abundances %>%
   ggplot(aes(x = abundance)) +
   geom_histogram()
 
-loghealthy_distribution <- group_abundances %>%
-  filter(group == "healthy") %>%
+loghealthy_distribution <- healthy_abundances %>%
   ggplot(aes(x = log_abundance)) +
   geom_histogram()
 ```
