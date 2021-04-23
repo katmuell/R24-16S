@@ -262,6 +262,11 @@ sample_data(people.ps.rel)$Akk_presence <- akks$has_Akk
 sample_variables(people.ps.rel)
 ```
 
+Output this phyloseq object containing phylogroup metadata for later use in other analyses
+```{r}
+saveRDS(people.ps.rel, file.path(out.dir, 'r24_phylogroups.rds'))
+```
+
 ```{r}
 akk_stats <- data.frame(total_samples = nsamples(people.ps.rel),
                        total_akk = nsamples(subset_samples(people.ps.rel, AmI_presence == "AmI_Positive" | AmII_presence == "AmII_Positive" | AmIV_presence == "AmIV_Positive")),
