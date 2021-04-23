@@ -70,7 +70,7 @@ Adjust size breaks as needed for your data and change to shape
 #Plot with filled circles
 #tiff("bubble_Feb6_perlog.tiff", units="in", width=8.75, height=7.25, res=300)
 
-ggplot(b8, aes(x = as.factor(Time), y = Patient_ID, col=Clade, shape=Isolate)) +
+filled.bubbles <- ggplot(b8, aes(x = as.factor(Time), y = Patient_ID, col=Clade, shape=Isolate)) +
   geom_point(aes(size = RelPer), alpha=0.5, shape = 19) +
   scale_size(breaks = c(0, 0.01, 0.1, 10, 20, 30),range = c(2,20)) + my.theme + scale_y_discrete(limits=rev) + xlab("Time (months)") +
   ylab("Patient ID") + labs(size = "Akkermansia 16S rRNA Abundance (%)", col = "Phylogroup Compositon") + scale_colour_manual(values = cols)
@@ -79,9 +79,13 @@ ggplot(b8, aes(x = as.factor(Time), y = Patient_ID, col=Clade, shape=Isolate)) +
 #Plot with empty circles
 #tiff("bubble_Feb6_perlog.tiff", units="in", width=8.75, height=7.25, res=300)
 
-ggplot(b8, aes(x = as.factor(Time), y = Patient_ID, col=Clade, shape=Isolate)) +
+empty.bubbles <- ggplot(b8, aes(x = as.factor(Time), y = Patient_ID, col=Clade, shape=Isolate)) +
   geom_point(aes(size = RelPer), alpha=0.5, shape = 21, stroke=1.5) +
   scale_size(breaks = c(0, 0.01, 0.1, 10, 20, 30),range = c(2,20)) + my.theme + scale_y_discrete(limits=rev) + xlab("Time (months)") +
   ylab("Patient ID") + labs(size = "Akkermansia Relative Abundance (%)") + scale_colour_manual(values = cols)
 #dev.off()
+```
+
+```{r}
+filled.bubbles
 ```
