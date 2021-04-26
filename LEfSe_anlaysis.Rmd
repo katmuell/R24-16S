@@ -77,3 +77,58 @@ plot_ef_bar(lef.AmII)
 ```{r}
 plot_ef_bar(lef.AmIV)
 ```
+
+#Cleaner Method
+
+Filter for ASVs which were identifiable down to the genus level
+```{r}
+goodgenus.ps <- phylogroups.ps %>%
+  subset_taxa(!is.na(Genus))
+print(goodgenus.ps)
+```
+
+Simplify LEfSe output
+```{r}
+#Combine the genus and species identifications
+taxa <- tax_table(goodgenus.ps) %>%
+  as.data.frame()
+taxa$Genus_new <- paste(taxa$Genus, taxa$Species, sep = "_")
+
+#Get rid of everything but the genus/species combo name
+new.taxa <- taxa %>%
+  select(Genus_new)
+colnames(new.taxa)[1] <- "Genus"
+
+#Replace the taxa table in the phyloseq object with the new genus/species only table
+clean.phylogroups.ps <- goodgenus.ps
+tax_table(clean.phylogroups.ps) <- as.matrix(new.taxa)
+```
+
+We'll just look at thoses samples that had some level of Akkermansia for phylogroup-pyhylogroup comparisons
+```{r}
+clean.hasakks.ps <- clean.phylogroups.ps %>%
+  subset_samples(Akk_presence == "Akk_Positive")
+print(clean.hasakks.ps)
+```
+
+Perform LefSe Analyses for phylogroup-phylogroup comparisons
+```{r}
+#AmI
+amI.lef <- lefse(clean.hasakks.ps,
+                 class = "AmI_presence")
+
+#AmII
+amII.lef <- lefse(clean.hasakks.ps,
+                 class = "AmII_presence")
+
+#AmIV
+amIV.lef <- lefse(clean.hasakks.ps,
+                 class = "AmIV_presence")
+```
+
+Check plots
+```{r}
+plot_ef_bar(amI.lef)
+plot_ef_bar(amII.lef)
+plot_ef_bar(amIV.lef)
+```
