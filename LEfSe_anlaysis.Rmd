@@ -115,15 +115,18 @@ Perform LefSe Analyses for phylogroup-phylogroup comparisons
 ```{r}
 #AmI
 amI.lef <- lefse(clean.hasakks.ps,
-                 class = "AmI_presence")
+                 class = "AmI_presence",
+                 correct = "1")
 
 #AmII
 amII.lef <- lefse(clean.hasakks.ps,
-                 class = "AmII_presence")
+                 class = "AmII_presence",
+                 correct = "1")
 
 #AmIV
 amIV.lef <- lefse(clean.hasakks.ps,
-                 class = "AmIV_presence")
+                 class = "AmIV_presence",
+                 correct = "1")
 ```
 
 Check plots
