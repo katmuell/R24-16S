@@ -132,3 +132,13 @@ plot_ef_bar(amI.lef)
 plot_ef_bar(amII.lef)
 plot_ef_bar(amIV.lef)
 ```
+
+```{r}
+marker_table(lef.AmI) -> amI.table
+marker_table(lef.AmII) -> amII.table
+marker_table(lef.AmIV) -> amIV.table
+
+write.csv(amI.table, file.path(out.dir, "amI_lefse.csv"))
+write.csv(amII.table, file.path(out.dir, "amII_lefse.csv"))
+write.csv(amIV.table, file.path(out.dir, "amIV_lefse.csv"))
+```
