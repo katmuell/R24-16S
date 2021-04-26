@@ -1,0 +1,79 @@
+---
+title: "LEfSe_analysis"
+author: "Katherine Mueller"
+date: "4/26/2021"
+output: html_document
+---
+
+##LEfSe analysis for R24 sample series
+Generation of significant and effect size evaluations. It's better to just then take the output into GraphPad Prism to make good-looking graphs.
+
+##Setup
+#Load Libraries
+```{r}
+library(dplyr)
+library(readr)
+library(phyloseq)
+library(tibble)
+library(ggplot2)
+library(microbiomeMarker)
+```
+
+#Define Paths
+```{r}
+phylogroups.rds = "../../Data/Data_for_analysis/Community_Analysis/full_R24/r24_phylogroups.rds"
+out.dir = "../../Data/Data_for_analysis/Community_Analysis/full_R24"
+```
+
+#Load and Check Phyloseq Object
+```{r}
+phylogroups.ps = read_rds(phylogroups.rds)
+print(phylogroups.ps)
+```
+
+```{r}
+sample_variables(phylogroups.ps)
+```
+
+##LEfSe Analysis
+#Initial Tries
+```{r}
+family.ps <- phylogroups.ps %>%
+  tax_glom(taxrank = "Family")
+
+lef <- lefse(family.ps,
+             class = "Akk_presence",
+             multicls_strat = TRUE)
+```
+
+```{r}
+plot_ef_bar(lef)
+```
+
+Are there taxa associated with individual phylogroups?
+```{r}
+haveakk.ps <- phylogroups.ps %>%
+  subset_samples(Akk_presence == "Akk_Positive")
+
+lef.AmI <- lefse(haveakk.ps,
+                 class = "AmI_presence",
+                 multicls_strat = TRUE)
+lef.AmII <- lefse(haveakk.ps,
+                 class = "AmII_presence",
+                 multicls_strat = TRUE)
+lef.AmIV <- lefse(haveakk.ps,
+                 class = "AmIV_presence",
+                 multicls_strat = TRUE)
+```
+
+```{r}
+plot_ef_bar(lef.AmI)
+```
+
+```{r}
+plot_ef_bar(lef.AmII)
+```
+
+```{r}
+plot_ef_bar(lef.AmIV)
+```

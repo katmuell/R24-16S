@@ -95,12 +95,12 @@ b8 <- b8 %>%
 Adjust size breaks as needed for your data and change to shape  
 ```{r}
 #Plot with filled circles
-#tiff("bubble_fullset_perlog.tiff", units="in", width=8.75, height=8.25, res=300)
+tiff("bubble_fullset_perlog.tiff", units="in", width=8.75, height=8.25, res=300)
 ggplot(b8, aes(x = as.factor(Time), y = Patient_ID, col=Clade, shape=Isolate)) +
   geom_point(aes(size = RelPer), alpha=0.5, shape = 19) + facet_wrap(~graphgroup, scales = "free") +
   scale_size(breaks = c(0.01, 0.1, 1, 10, 20),range = c(2,15)) + my.theme + scale_y_discrete(limits=rev) + xlab("Time (months)") +
   ylab("Patient ID") + labs(size = "Akkermansia 16S rRNA Abundance (%)", col = "Phylogroup Compositon") + scale_colour_manual(values = cols)
-#dev.off()
+dev.off()
 
 #Plot with empty circles
 #tiff("bubble_Feb6_perlog.tiff", units="in", width=8.75, height=7.25, res=300)
