@@ -235,6 +235,44 @@ akks.boxplot
 Based on an outside comparison of the ASV sequences and the V3-V4 sequences of our isolates, as well as the near-zero abundance of all but the top three ASVs, I will concentrate on just those three.
 From the outside comparison, I had determined that the mean-1 SV is most likely an AmI, the mean-2 SV is an AmIV, and the mean-3 SV is an AmII.
 
+Generate phyloseq objects that have one of the three main ASVs as the only akkermansia for use in Kim's program
+```{r}
+taxa_table_for_Kims <- tax_table(people.ps.rel) %>%
+  as.data.frame() %>%
+  rename(domain = Kingdom, phylum = Phylum, class = Class, order = Order, family = Family, genus = Genus, species = Species) %>%
+  as.matrix() %>%
+  tax_table()
+
+otu_table_for_Kims <- otu_table(people.ps.rel)
+meta_for_Kims <- sample_data(people.ps.rel)
+
+no.akks.ps <- phyloseq(taxa_table_for_Kims, otu_table_for_Kims, meta_for_Kims) %>%
+  subset_taxa(genus != "Akkermansia")
+```
+
+```{r}
+akks_table_for_Kims <- tax_table(akks.ps.rel.0001mean) %>%
+  as.data.frame() %>%
+  rename(domain = Kingdom, phylum = Phylum, class = Class, order = Order, family = Family, genus = Genus, species = Species) %>%
+  as.matrix() %>%
+  tax_table()
+akks_for_Kims.ps <- phyloseq(akks_table_for_Kims, otu_table(akks.ps.rel.0001mean), sample_data(akks.ps.rel.0001mean))
+
+only.AmI.ps <- prune_taxa("AGGTCTCAAGCGTTGTTCGGAATCACTGGGCGTAAAGCGTGCGTAGGCTGTTTCGTAAGTCGTGTGTGAAAGGCGCGGGCTCAACCCGCGGACGGCACATGATACTGCGAGACTAGAGTAATGGAGGGGGAACCGGAATTCTCGGTGTAGCAGTGAAATGCGTAGATATCGAGAGGAACACTCGTGGCGAAGGCGGGTTCCTGGACATTAACTGACGCTGAGGCACGAAGGCCAGGGGA", akks_for_Kims.ps)
+only.AmII.ps <- prune_taxa("AGGTCTCAAGCGTTGTTCGGAATCACTGGGCGTAAAGCGTGCGTAGGCGGTTTCGTAAGTCGTGTGTGAAAGGCGGGGGCTCAACCCCCGGACTGCACATGATACTGCGAGACTAGAGTAATGGAGGGGGAACCGGAATTCTCGGTGTAGCAGTGAAATGCGTAGATATCGAGAGGAACACTCGTGGCGAAGGCGGGTTCCTGGACATTAACTGACGCTGAGGCACGAAGGCCAGGGGA", akks_for_Kims.ps)
+only.AmIV.ps <- prune_taxa("AGGTCTCAAGCGTTGTTCGGAATCACTGGGCGTAAAGCGTGCGTAGGCTGTTTCGTAAGTCGTGTGTGAAAGGCAGGGGCTCAACCCCTGGATTGCACATGATACTGCGAGACTAGAGTAATGGAGGGGGAACCGGAATTCTCGGTGTAGCAGTGAAATGCGTAGATATCGAGAGGAACACTCGTGGCGAAGGCGGGTTCCTGGACATTAACTGACGCTGAGGCACGAAGGCCAGGGGA", akks_for_Kims.ps)
+
+r24.AmI.ps <- merge_phyloseq(no.akks.ps, only.AmI.ps)
+r24.AmII.ps <- merge_phyloseq(no.akks.ps, only.AmII.ps)
+r24.AmIV.ps <- merge_phyloseq(no.akks.ps, only.AmIV.ps)
+```
+
+```{r}
+saveRDS(r24.AmI.ps, file.path(out.dir, 'r24_AmI.rds'))
+saveRDS(r24.AmII.ps, file.path(out.dir, 'r24_AmII.rds'))
+saveRDS(r24.AmIV.ps, file.path(out.dir, 'r24_AmIV.rds'))
+```
+
 #Count phylogroup presence
 How many samples have Akkermansia when we're only looking at those top three ASVs?
 ```{r}
