@@ -10,7 +10,8 @@ output: html_document
 ```{r}
 library(phyloseq)
 library(readr)
-library()
+library(streamgraph)
+library(htmlwidgets)
 ```
 
 #Define Paths
