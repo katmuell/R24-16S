@@ -1,0 +1,70 @@
+---
+title: "Streamgraphs"
+author: "Katherine Mueller"
+date: "5/17/2021"
+output: html_document
+---
+##Setup
+
+#Load Libraries
+```{r}
+library(phyloseq)
+library(readr)
+library()
+```
+
+#Define Paths
+```{r}
+r24_phylogroup.rds = "../../Data/Data_for_analysis/Community_Analysis/full_R24/r24_phylogroups.rds"
+out.dir = "../../Data/Data_for_analysis/Community_Analysis/full_R24"
+figs.dir = "../../Data/Data_for_analysis/Community_Analysis/full_R24/figures"
+```
+
+#Load and Check Phyloseq Object
+```{r}
+ps = read_rds(r24_phylogroup.rds)
+print(ps)
+```
+
+```{r}
+sample_variables(ps)
+```
+
+##Analysis
+#Data Exploration
+Look at the unfiltered dataset
+```{r}
+taxtab <- data.frame(tax_table(ps)@.Data)
+
+perc.id <- colSums(!is.na(taxtab))/nrow(taxtab)
+perc.id
+```
+
+```{r}
+apply(taxtab, 2, function(x){length(unique(x))})
+```
+
+Filter data to make the streamgraphs more manageable
+```{r}
+min_fraction <- 0.0001
+min_samples <- 1
+
+filt.ps <- filter_taxa(ps, 
+                       function(x) sum(x >= min_fraction) >= min_samples,
+                       prune = TRUE)
+
+ntaxa(filt.ps)
+```
+Check filtering results
+```{r}
+new.taxtab <- data.frame(tax_table(filt.ps)@.Data)
+
+apply(new.taxtab, 2, function(x){length(unique(x))})
+```
+
+
+#Generate Streamgraphs
+```{r}
+
+```
+
