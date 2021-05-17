@@ -12,6 +12,7 @@ library(phyloseq)
 library(readr)
 library(streamgraph)
 library(htmlwidgets)
+library(tidyverse)
 ```
 
 #Define Paths
@@ -63,9 +64,39 @@ new.taxtab <- data.frame(tax_table(filt.ps)@.Data)
 apply(new.taxtab, 2, function(x){length(unique(x))})
 ```
 
-
 #Generate Streamgraphs
+Generate phyloseq objects for just the individuals we're interested in.
 ```{r}
-
+PIDs.ps <- filt.ps %>%
+  subset_samples(ind_id %in% c(133, 191, 161, 219, 204))
 ```
 
+```{r}
+melt <- psmelt(PIDs.ps)
+
+#Combine taxonomic classifications for each ASV
+melt <- mutate(melt,
+               name = paste(Kingdom, Phylum, Class, Order, Family, Genus, sep = ";"))
+melt$name <- factor(melt$name)
+```
+
+```{r}
+melt <- melt %>%
+  group_by(visit, ind_id, name) %>%
+  summarize(Abundance = sum(Abundance))
+```
+
+
+```{r}
+patients <- unique(melt$ind_id)
+
+for (p in patients){
+  stream <- melt %>%
+    filter(ind_id == p) %>%
+    streamgraph(key = name, value = Abundance, date = visit, scale = "continuous") %>%
+    sg_axis_x(tick_interval = 5)
+  
+  saveWidget(stream, file = file.path(figs.dir,
+                                      paste(p, "streamgraph.html", sep = "_")))
+}
+```
